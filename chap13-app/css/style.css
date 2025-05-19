@@ -1,25 +1,33 @@
 @charset "utf-8";
-div{
-  margin: 1em
+
+div {
+  margin: 1em;
 }
 
-li{
+li {
   list-style-type: none;
-  margin-bottom: 1em;
+  margin-botto: 1em;
 }
 
-ol>li{
+ol > li {
   list-style-type: decimal;
   margin-bottom: 0;
 }
-a{
+
+a {
   color: #5e78c1;
   text-decoration: none;
 }
-a:hover{
+
+a:hover {
   color: #b04188;
   text-decoration: underline;
 }
-.error{
-  color: #FF0000;
+
+.error {
+  color: #f00;
 }
+
+
+
+

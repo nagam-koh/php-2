@@ -1,9 +1,8 @@
 <?php
-require_once("./lib/util2.php");
+require_once('lib/util2.php');
 $user = 'testuser';
 $password = 'testuser';
 $dbName = 'testdb';
-
 $host = 'localhost:3306';
 $dsn = "mysql:host={$host};dbname={$dbName};charset=utf8";
 ?>
@@ -13,16 +12,13 @@ $name = $_POST['name'];
 <!DOCTYPE html>
 <html lang="ja">
 
-
-<!DOCTYPE html>
-<html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="./css/tablestyle.css">
-  <link rel="stylesheet" href="css/addStyle.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tablestyle.css">
+  <link rel="stylesheet" href="css/addstyle.css">
 </head>
 
 <body>
@@ -30,52 +26,61 @@ $name = $_POST['name'];
     <h1>社員情報管理</h1>
   </header>
   <div class="content">
-    <?php
-    try {
-      $pdo = new PDO($dsn, $user, $password);
-      $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-      $sql = "SELECT*FROM member where  name like :name";
-      $stm = $pdo->prepare($sql);
-      $stm ->bindValue(':name',$name,PDO::PARAM_STR);
-      $stm->execute();
-      $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-      echo "<table>";
-      echo "<thead><tr>";
-      echo " <th>","ID","</th>";
-      echo " <th>","名前","</th>";
-      echo "<th>","年齢","</th>";
-      echo " <th>","性別","</th>";
-      echo "</tr></thead>";
-      echo "<tbody>";
+    <main>
+      <h2>社員一覧</h2>
+      <div>
+        <?php
+        try {
+          $pdo = new PDO($dsn, $user, $password);
+          $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+          $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+          echo "データベース{$dbName}に接続しました";
+          $sql = <<< HHH
+SELECT * FROM member 
+WHERE name LIKE :name
+HHH;
+          $stm = $pdo->prepare($sql);
+          $stm->bindValue(':name', $name, PDO::PARAM_STR);
+          $stm->execute();
+          $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+          echo "<table>";
+          echo "<thead><tr>";
+          echo "<th>", "ID", "</th>";
+          echo "<th>", "名前", "</th>";
+          echo "<th>", "年齢", "</th>";
+          echo "<th>", "性別", "</th>";
+          echo "</tr></thead>";
+          echo "<tbody>";
+          foreach ($result as $row) {
+            echo "<tr>";
+            echo "<td>", h($row['id']), "</td>";
+            echo "<td>", h($row['name']), "</td>";
+            echo "<td>", h($row['age']), "</td>";
+            echo "<td>", h($row['sex']), "</td>";
+            echo "</tr>";
+          }
+          echo "</tbody>";
+          echo "</table>";
+        } catch (Exception $e) {
+          echo '<span class="error">エラーがありました</span>';
+          echo $e->getMessage();
+          exit();
+        }
+        ?>
 
-
-      foreach ($result as $row) {
-        echo " <tr>";
-        echo "<td>",h($row['id']),"</td>";
-        echo "<td>",h($row['name']),"</td>";
-        echo "<td>",h($row['age']),"</td>";
-        echo "<td>",h($row['sex']),"</td>";
-        echo " </tr>";
-      }
-      echo "</tbody>";
-      echo " </table>";
-    } catch (PDOException $e) {
-      echo '<span class="error">エラーがありました</span><br>';
-      echo $e->getMessage();
-      exit();
-    }
-    ?>
-  </div>
-  </main>
-
-  </div>
+      </div>
+    </main>
+    <aside>
+      <h2>補助機能</h2>
+      <form action="like.php" method="post">
+        <input type="text" name="name" placeholder="名前">
+        <input type="submit" value="検索">
+      </form>
+    </aside>
+  </div><!-- .content end -->
   <footer>
-kn
-
+    <small>&copy; 2025 Seiichi Nukayama</small>
   </footer>
-
 </body>
 
 </html>
